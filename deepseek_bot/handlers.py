@@ -91,7 +91,6 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
             print(e)
             await init_msg.edit_text(
                 text="Error generating response.",
-                reply_to_message_id=update.message.message_id,
             )
             break
         await asyncio.sleep(0.1)
