@@ -1,2 +1,2 @@
 python-telegram-bot==20.7
-git+https://github.com/rabilrbl/deepseek-api.git
+git+https://github.com/rabilrbl/deepseek-api.git@0.2.0
