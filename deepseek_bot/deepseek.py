@@ -14,7 +14,7 @@ def generate_response(deepseek, prompt: str):
     # yield streaming response
     for message in deepseek.chat(prompt):
         pending_response += message["choices"][0]["delta"]["content"]
-        if pending_response and len(pending_response) > 100:
+        if pending_response:
             yield pending_response
             pending_response = ""
     if pending_response:
