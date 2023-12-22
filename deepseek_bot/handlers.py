@@ -61,7 +61,7 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     deepseek = chats[update.message.chat_id]["chat"]
     prompt = update.message.text
     full_response = ""
-    for message in generate_response(deepseek,prompt):
+    async for message in generate_response(deepseek,prompt):
         try:
             if message:
                 full_response += message
