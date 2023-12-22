@@ -11,8 +11,10 @@ from deepseek_bot.html_format import format_message
 
 chats: dict[str, ty.Any] = {}
 
-def new_chat(chat_id: int, model: str) -> None:
-    ds = deepseek(model)
+async def new_chat(chat_id: int, model: str) -> None:
+    if chat_id in chats:
+        chats[chat_id]["chat"].close()
+    ds = await deepseek(model)
     chats[chat_id] = {
         "chat": ds,
     }
@@ -120,7 +122,7 @@ async def new_chat_callback_handler(update: Update, _: ContextTypes.DEFAULT_TYPE
         reply_markup=None,
     )
     model = update.callback_query.data.replace("new_chat_", "")
-    new_chat(update.callback_query.message.chat.id, model)
+    await new_chat(update.callback_query.message.chat.id, model)
     await init_msg.edit_text(
         text="Started new `" + model + "` chat session\.",
         reply_markup=None,

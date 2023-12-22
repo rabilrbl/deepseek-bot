@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
     
 
-def deepseek(model: str) -> DeepseekAPI:
-    return DeepseekAPI(email=os.getenv("DEEPSEEK_EMAIL"), password=os.getenv("DEEPSEEK_PASSWORD"), model_class=model, save_login=True)
+async def deepseek(model: str) -> DeepseekAPI:
+    return await DeepseekAPI.create(email=os.getenv("DEEPSEEK_EMAIL"), password=os.getenv("DEEPSEEK_PASSWORD"), model_class=model, save_login=True)
 
 
 def generate_response(deepseek, prompt: str):
