@@ -87,8 +87,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                         )
         except Exception as e:
             print(e)
-            await init_msg.edit_text(
-                text="Error generating response.",
+            await init_msg.reply_text(
+                text=f"Error generating response.\n\n {e}",
             )
             break
         await asyncio.sleep(0.1)
