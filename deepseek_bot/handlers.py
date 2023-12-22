@@ -10,7 +10,7 @@ from deepseek_bot.deepseek import deepseek, generate_response
 from deepseek_bot.html_format import format_message
 
 async def new_chat(context: ContextTypes.DEFAULT_TYPE, model: str) -> None:
-    if "ds" in context.chat_data:
+    if context.chat_data.get("ds") is not None:
         await context.chat_data["ds"].close()
     ds = await deepseek(model)
     context.chat_data["ds"] = ds
@@ -45,7 +45,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         text="Generating response...",
         reply_to_message_id=update.message.message_id,
     )
-    if "ds" not in context.chat_data:
+    if context.chat_data.get("ds") is None:
         await init_msg.edit_text(
             "Choose a model to start a new chat session:",
             reply_markup = InlineKeyboardMarkup([
