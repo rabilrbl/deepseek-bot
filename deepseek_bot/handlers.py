@@ -9,15 +9,11 @@ from telegram.constants import ChatAction, ParseMode
 from deepseek_bot.deepseek import deepseek, generate_response
 from deepseek_bot.html_format import format_message
 
-chats: dict[str, ty.Any] = {}
-
-async def new_chat(chat_id: int, model: str) -> None:
-    if chat_id in chats:
-        chats[chat_id]["chat"].close()
+async def new_chat(context: ContextTypes.DEFAULT_TYPE, model: str) -> None:
+    if "ds" in context.chat_data:
+        await context.chat_data["ds"].close()
     ds = await deepseek(model)
-    chats[chat_id] = {
-        "chat": ds,
-    }
+    context.chat_data["ds"] = ds
 
 
 async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
@@ -44,7 +40,7 @@ Send a message to the bot to generate a response.
     await update.message.reply_text(help_text)
     
     
-async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     init_msg = await update.message.reply_text(
         text="Generating response...",
         reply_to_message_id=update.message.message_id,
@@ -58,7 +54,7 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
             ]),
         )
         return
-    deepseek = chats[update.message.chat_id]["chat"]
+    deepseek = context.chat_data["ds"]
     prompt = update.message.text
     full_response = ""
     async for message in generate_response(deepseek,prompt):
@@ -115,14 +111,14 @@ async def newchat_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     )
     
     
-async def new_chat_callback_handler(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+async def new_chat_callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Start a new chat session."""
     init_msg = await update.callback_query.message.edit_text(
         text="Starting new chat session...",
         reply_markup=None,
     )
     model = update.callback_query.data.replace("new_chat_", "")
-    await new_chat(update.callback_query.message.chat.id, model)
+    await new_chat(context, model)
     await init_msg.edit_text(
         text="Started new `" + model + "` chat session\.",
         reply_markup=None,
