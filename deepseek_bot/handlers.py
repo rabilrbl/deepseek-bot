@@ -45,7 +45,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         text="Generating response...",
         reply_to_message_id=update.message.message_id,
     )
-    if update.message.chat.id not in chats:
+    if "ds" not in context.chat_data:
         await init_msg.edit_text(
             "Choose a model to start a new chat session:",
             reply_markup = InlineKeyboardMarkup([
